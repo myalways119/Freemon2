@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Freemon2</string>
+
+    <!--Intro Actovity-->
+    <string name="intro_main">사람들의 온기를 느낄 수 있는 \n작은 공간</string>
+</resources>
