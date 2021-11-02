@@ -23,7 +23,7 @@ class IntroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
 
-        IntroAnimation()
+        IntroAnimation()*
 
         Handler().postDelayed({
             val intent = Intent(this, MainActivity::class.java)
