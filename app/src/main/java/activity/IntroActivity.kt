@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -25,13 +26,16 @@ class IntroActivity : AppCompatActivity() {
     private lateinit var introImage : ImageView
     private lateinit var introText : TextView
     private var devicePhoneNum:String = ""
+    private var deviceAndroidId:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
 
         devicePhoneNum = GetDeviceInfo()
+        deviceAndroidId = GetUuid();
         Toast.makeText(this, devicePhoneNum, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, deviceAndroidId, Toast.LENGTH_LONG).show()
 
         IntroAnimation()
 
@@ -41,7 +45,7 @@ class IntroActivity : AppCompatActivity() {
         }, SPLASH_SCREEN.toLong())
     }
 
-    fun GetDeviceInfo():String
+    private fun GetDeviceInfo():String
     {
         var devicePhoneNum:String = ""
 
@@ -56,6 +60,11 @@ class IntroActivity : AppCompatActivity() {
         }
 
         return devicePhoneNum
+    }
+
+    private fun GetUuid() : String {
+        val uuid =  android.provider.Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+        return uuid
     }
 
     fun IntroAnimation()

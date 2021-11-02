@@ -20,4 +20,13 @@
         app:font="@font/nanumbarungothicbold"
         app:fontStyle="normal"
         app:fontWeight="1000" />
+
+    <!--bold-->
+    <font
+        android:font="@font/nanumfontcalligraphic"
+        android:fontStyle="normal"
+        android:fontWeight="700"
+        app:font="@font/nanumfontcalligraphic"
+        app:fontStyle="normal"
+        app:fontWeight="1000" />
 </font-family>

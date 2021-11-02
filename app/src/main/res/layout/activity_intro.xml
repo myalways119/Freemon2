@@ -24,13 +24,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/intro_main"
-        android:textSize="17sp"
+        android:textSize="20sp"
         android:gravity="center"
-        android:fontFamily="@font/custom_font_family"
+        android:fontFamily="@font/nanumfontcalligraphic"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:textColor="#686868"
-        android:textStyle="italic"
+        android:textStyle="bold"
         android:lineSpacingExtra ="7sp"
         />
 
