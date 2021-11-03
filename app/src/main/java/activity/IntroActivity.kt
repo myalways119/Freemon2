@@ -62,7 +62,10 @@ class IntroActivity : AppCompatActivity() {
         //Delay
         Handler().postDelayed({
             val intent = GetNextActivity()
-            startActivity(intent)
+            if(intent != null)
+            {
+                startActivity(intent)
+            }
             finish()
         }, delayTime.toLong())
     }
@@ -75,9 +78,9 @@ class IntroActivity : AppCompatActivity() {
         // Next Activity 결정
     }
 
-    private fun GetNextActivity():Intent
+    private fun GetNextActivity():Intent?
     {
-        val intent:Intent
+        var intent:Intent? = null
 
         var savedAndroidId:String =  SharedPreferencesManager.GetStringValue(this, SharedPreferencesManager.KEY_ANDROID_ID,"")
         var savedPhoneNum:String = SharedPreferencesManager.GetStringValue(this, SharedPreferencesManager.KEY_PHONE_NUM,"")
@@ -86,23 +89,21 @@ class IntroActivity : AppCompatActivity() {
 
         if (deviceAndrodiId.isNullOrEmpty() == true || devicePhoneNo.isNullOrEmpty() == true)
         {
-            intent = Intent(this, MainActivity::class.java)
             //메세지 팝업 후 시스템 종료
             //디바이스의 정보를 가져올 수 없습니다.
         }
-        else if (savedAndroidId == deviceAndrodiId && savedPhoneNum == devicePhoneNo)
+        else if (savedAndroidId == deviceAndrodiId && savedPhoneNum == devicePhoneNo && savedAndroidId.isNullOrEmpty() == false && savedPhoneNum.isNullOrEmpty()== false)
         {
-            var userInfo:UserItem = GetUserInfo(savedPhoneNum);
-            intent = Intent(this, MainActivity::class.java)
             //로그인 정보 DB에서 조회
             //DB에 정보가 존재 한다면
             //바로 Main Activity화면으로 이동
+            var userInfo:UserItem? = GetUserInfo(savedPhoneNum);
+            intent = Intent(this, MainActivity::class.java)
         }
         else
-        {
-            intent = Intent(this, MainActivity::class.java)
-            //로그인 화면으로 이동
+        {   //로그인 화면으로 이동
             //해당 로그인 화면에서 "기존계정 찾기" 클릭해서 질문 답변 입력하도록 하면 자동으로 로그인되도록 설정.
+            intent = Intent(this, LoginActivity::class.java)
         }
 
         return intent
@@ -124,6 +125,7 @@ class IntroActivity : AppCompatActivity() {
         {
             val intent = Intent(this, PermissionActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 
