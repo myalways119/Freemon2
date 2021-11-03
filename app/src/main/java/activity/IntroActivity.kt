@@ -15,11 +15,19 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import co.kr.freemon2.R
 import android.telephony.TelephonyManager
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import api.UserApi
+import common.Common
 import common.CommonConst
 import common.GlobalVariables
 import common.SharedPreferencesManager
+import item.UserItem
+import item.UserResponseItem
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class IntroActivity : AppCompatActivity() {
 
@@ -30,7 +38,8 @@ class IntroActivity : AppCompatActivity() {
     private lateinit var introImage : ImageView
     private lateinit var introText : TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
 
@@ -52,12 +61,13 @@ class IntroActivity : AppCompatActivity() {
 
         //Delay
         Handler().postDelayed({
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = GetNextActivity()
             startActivity(intent)
+            finish()
         }, delayTime.toLong())
     }
 
-    fun Initialize()
+    private fun Initialize()
     {
         CheckPermission() //Check Permission always should be first.
         IntroAnimation() //Intro Activity Animation
@@ -65,31 +75,40 @@ class IntroActivity : AppCompatActivity() {
         // Next Activity 결정
     }
 
-    fun GetNextActivity()
+    private fun GetNextActivity():Intent
     {
+        val intent:Intent
+
         var savedAndroidId:String =  SharedPreferencesManager.GetStringValue(this, SharedPreferencesManager.KEY_ANDROID_ID,"")
         var savedPhoneNum:String = SharedPreferencesManager.GetStringValue(this, SharedPreferencesManager.KEY_PHONE_NUM,"")
+        var deviceAndrodiId:String = GlobalVariables.deviceAndroidId
+        var devicePhoneNo:String = GlobalVariables.devicePhoneNum
 
-        if (savedAndroidId.isNullOrEmpty() == true || savedPhoneNum.isNullOrEmpty() == true)
+        if (deviceAndrodiId.isNullOrEmpty() == true || devicePhoneNo.isNullOrEmpty() == true)
         {
-            //Login Activity
+            intent = Intent(this, MainActivity::class.java)
+            //메세지 팝업 후 시스템 종료
+            //디바이스의 정보를 가져올 수 없습니다.
         }
-        else if (savedAndroidId == GlobalVariables.deviceAndroidId
-                && savedPhoneNum == GlobalVariables.devicePhoneNum)
-        {//자동 로그인
-            //저장된 정보로 DB 조회 유저 정보 가져오기.
-            //DATA가 있으면 Main Activity 없으면 Login Activity
+        else if (savedAndroidId == deviceAndrodiId && savedPhoneNum == devicePhoneNo)
+        {
+            var userInfo:UserItem = GetUserInfo(savedPhoneNum);
+            intent = Intent(this, MainActivity::class.java)
+            //로그인 정보 DB에서 조회
+            //DB에 정보가 존재 한다면
+            //바로 Main Activity화면으로 이동
         }
         else
         {
-            //Login Activity
+            intent = Intent(this, MainActivity::class.java)
+            //로그인 화면으로 이동
+            //해당 로그인 화면에서 "기존계정 찾기" 클릭해서 질문 답변 입력하도록 하면 자동으로 로그인되도록 설정.
         }
 
-
-        //저잗된
+        return intent
     }
 
-    fun CheckPermission()
+    private fun CheckPermission()
     {
         var hasPermission: Boolean = true
 
@@ -108,7 +127,7 @@ class IntroActivity : AppCompatActivity() {
         }
     }
 
-    fun IntroAnimation()
+    private fun IntroAnimation()
     {
         topAnimation = AnimationUtils.loadAnimation(this, R.anim.top_animation)
         bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_animation)
@@ -119,6 +138,53 @@ class IntroActivity : AppCompatActivity() {
         introImage.animation = topAnimation
         introText.animation = bottomAnimation
 
+    }
+
+    private fun GetUserInfo(phoneNum: String):UserItem?
+    {
+        var returnItem:UserItem? = null
+
+        if (phoneNum.isNullOrEmpty() == true) return returnItem;
+
+        val api: UserApi = Common.client!!.create(UserApi::class.java)
+        val update: Call<UserResponseItem?>? = api.search("SELECT", phoneNum)
+
+        update!!.enqueue(object : Callback<UserResponseItem?> {
+            override fun onResponse(call: Call<UserResponseItem?>?, response: Response<UserResponseItem?>?)
+            {
+                if (response?.body() == null) {
+                    //showInfoDialog(a, "ERROR", "Response or ResponseBody is null")
+                    Toast.makeText(null, "Response or ResponseBody is null", Toast.LENGTH_LONG).show()
+                    return
+                }
+                val myResponseCode: String = response.body()!!.code!!
+                if (myResponseCode.equals(CommonConst.DbResponseCode.SUCCESS, ignoreCase = true))
+                {
+                    val userItems = response.body()?.result!!
+
+                    for(userItem in userItems)
+                    {
+                        returnItem = userItem
+                    }
+
+                    finish()
+                } else if (myResponseCode.equals(CommonConst.DbResponseCode.FAIL, ignoreCase = true)) {
+                    Toast.makeText(null, "UNSUCCESSFUL", Toast.LENGTH_LONG).show()
+
+                } else if (myResponseCode.equals(CommonConst.DbResponseCode.ERROR, ignoreCase = true)) {
+                    Toast.makeText(null, "NO MYSQL CONNECTION", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onFailure(
+                call: Call<UserResponseItem?>?,
+                t: Throwable
+            ) {
+                Log.d("RETROFIT", "ERROR THROWN DURING UPDATE: " + t.message)
+                Toast.makeText(null, "FAILURE THROWN", Toast.LENGTH_LONG).show()
+            }
+        })
+        return returnItem
     }
 
 /*

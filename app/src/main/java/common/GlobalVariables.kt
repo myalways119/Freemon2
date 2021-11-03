@@ -10,8 +10,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.getSystemService
 
 object GlobalVariables : AppCompatActivity(){
-    var devicePhoneNum:String? = null
-    var deviceAndroidId:String? = null
+    var devicePhoneNum:String = ""
+    var deviceAndroidId:String = ""
 
     public fun initialize()
     {
