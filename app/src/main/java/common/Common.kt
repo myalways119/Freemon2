@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import item.UserItem
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.ParseException
@@ -22,10 +23,9 @@ object Common
      */
     //supply your ip address. Type ipconfig while connected to internet to get your
     //ip address in cmd.
-    private const val base_url = "https://camposha.info/PHP/scientists/"
-
+    private const val base_url = "https://freemon1.cafe24.com/myfirstdream/php/"
     private var retrofit: Retrofit? = null
-    const val DATE_FORMAT = "yyyy-MM-dd"
+    public var userInfo:UserItem? = null
 
     /**
      * This method will return us our Retrofit instance which we can use to initiate HTTP calls.
@@ -85,21 +85,6 @@ object Common
     fun openActivity(c: Context, clazz: Class<*>?) {
         val intent = Intent(c, clazz)
         c.startActivity(intent)
-    }
-
-    /**
-     * This method will allow us convert a string into a java.util.Date object and
-     * return it.
-     */
-    fun giveMeDate(stringDate: String?): Date? {
-        return try {
-            val sdf =
-                SimpleDateFormat(DATE_FORMAT)
-            sdf.parse(stringDate)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-            null
-        }
     }
 
     /**

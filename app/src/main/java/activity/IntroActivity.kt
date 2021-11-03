@@ -1,7 +1,6 @@
 package activity
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +20,6 @@ import androidx.core.content.ContextCompat
 import api.UserApi
 import common.Common
 import common.CommonConst
-import common.GlobalVariables
 import common.SharedPreferencesManager
 import item.UserItem
 import item.UserResponseItem
@@ -30,8 +28,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class IntroActivity : AppCompatActivity() {
-
-    val SPLASH_SCREEN = 2500
+    val SPLASH_SCREEN = 2000
     private lateinit var topAnimation : Animation
     private lateinit var bottomAnimation : Animation
 
@@ -43,21 +40,7 @@ class IntroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
 
-        var startTime: Long
-        var endTime: Long
-        var delayTime: Long = 0
-        var elapsedTime: Long
-
-        startTime = System.currentTimeMillis();
-
         Initialize()
-
-        endTime = System.currentTimeMillis();
-        elapsedTime = endTime - startTime
-        if (SPLASH_SCREEN > elapsedTime)
-        {
-            delayTime = SPLASH_SCREEN - elapsedTime
-        }
 
         //Delay
         Handler().postDelayed({
@@ -66,26 +49,27 @@ class IntroActivity : AppCompatActivity() {
             {
                 startActivity(intent)
             }
-            finish()
-        }, delayTime.toLong())
+            //finish()
+        }, SPLASH_SCREEN.toLong())
     }
 
     private fun Initialize()
     {
         CheckPermission() //Check Permission always should be first.
-        IntroAnimation() //Intro Activity Animation
-        GlobalVariables.initialize(); //Initialize Global Variables (device phone num, device android id
+        SetAnimation() //Intro Activity Animation
+        //GlobalVariables.initialize(); //Initialize Global Variables (device phone num, device android id)
         // Next Activity 결정
     }
 
     private fun GetNextActivity():Intent?
     {
+
         var intent:Intent? = null
 
         var savedAndroidId:String =  SharedPreferencesManager.GetStringValue(this, SharedPreferencesManager.KEY_ANDROID_ID,"")
         var savedPhoneNum:String = SharedPreferencesManager.GetStringValue(this, SharedPreferencesManager.KEY_PHONE_NUM,"")
-        var deviceAndrodiId:String = GlobalVariables.deviceAndroidId
-        var devicePhoneNo:String = GlobalVariables.devicePhoneNum
+        var deviceAndrodiId:String = GetDeviceAndroidId()
+        var devicePhoneNo:String = GetDevicePhoneNum()
 
         if (deviceAndrodiId.isNullOrEmpty() == true || devicePhoneNo.isNullOrEmpty() == true)
         {
@@ -97,12 +81,17 @@ class IntroActivity : AppCompatActivity() {
             //로그인 정보 DB에서 조회
             //DB에 정보가 존재 한다면
             //바로 Main Activity화면으로 이동
-            var userInfo:UserItem? = GetUserInfo(savedPhoneNum);
-            intent = Intent(this, MainActivity::class.java)
+            Common.userInfo = GetUserInfo(devicePhoneNo);
+
+            if(Common.userInfo != null)
+            {
+                intent = Intent(this, MainActivity::class.java)
+            }
         }
         else
         {   //로그인 화면으로 이동
             //해당 로그인 화면에서 "기존계정 찾기" 클릭해서 질문 답변 입력하도록 하면 자동으로 로그인되도록 설정.
+            Common.userInfo = GetUserInfo(devicePhoneNo);
             intent = Intent(this, LoginActivity::class.java)
         }
 
@@ -125,11 +114,11 @@ class IntroActivity : AppCompatActivity() {
         {
             val intent = Intent(this, PermissionActivity::class.java)
             startActivity(intent)
-            finish()
+            //finish()
         }
     }
 
-    private fun IntroAnimation()
+    private fun SetAnimation()
     {
         topAnimation = AnimationUtils.loadAnimation(this, R.anim.top_animation)
         bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_animation)
@@ -139,11 +128,11 @@ class IntroActivity : AppCompatActivity() {
 
         introImage.animation = topAnimation
         introText.animation = bottomAnimation
-
     }
 
     private fun GetUserInfo(phoneNum: String):UserItem?
     {
+
         var returnItem:UserItem? = null
 
         if (phoneNum.isNullOrEmpty() == true) return returnItem;
@@ -156,9 +145,11 @@ class IntroActivity : AppCompatActivity() {
             {
                 if (response?.body() == null) {
                     //showInfoDialog(a, "ERROR", "Response or ResponseBody is null")
-                    Toast.makeText(null, "Response or ResponseBody is null", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(this, "Response or ResponseBody is null", Toast.LENGTH_LONG).show()
+                    Log.d("GetUserInfo", "Response or ResponseBody is null")
                     return
                 }
+
                 val myResponseCode: String = response.body()!!.code!!
                 if (myResponseCode.equals(CommonConst.DbResponseCode.SUCCESS, ignoreCase = true))
                 {
@@ -169,12 +160,12 @@ class IntroActivity : AppCompatActivity() {
                         returnItem = userItem
                     }
 
-                    finish()
+                    //finish()
                 } else if (myResponseCode.equals(CommonConst.DbResponseCode.FAIL, ignoreCase = true)) {
-                    Toast.makeText(null, "UNSUCCESSFUL", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(null, "UNSUCCESSFUL", Toast.LENGTH_LONG).show()
 
                 } else if (myResponseCode.equals(CommonConst.DbResponseCode.ERROR, ignoreCase = true)) {
-                    Toast.makeText(null, "NO MYSQL CONNECTION", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(null, "NO MYSQL CONNECTION", Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -186,9 +177,31 @@ class IntroActivity : AppCompatActivity() {
                 Toast.makeText(null, "FAILURE THROWN", Toast.LENGTH_LONG).show()
             }
         })
+
+
         return returnItem
     }
 
+    private fun GetDevicePhoneNum():String
+    {
+        var devicePhoneNum : String = ""
+
+        // READ_PHONE_NUMBERS 또는 READ_PHONE_STATE 권한을 허가 받았는지 확인
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED)
+        {
+            var teleManager: TelephonyManager = getSystemService(TELEPHONY_SERVICE) as TelephonyManager
+            devicePhoneNum = teleManager.line1Number.toString()
+        }
+
+        return devicePhoneNum
+    }
+
+    private fun GetDeviceAndroidId() : String
+    {
+        var androidId = ""
+        androidId = android.provider.Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+        return androidId
+    }
 /*
     private fun GetDeviceInfo():String
     {
