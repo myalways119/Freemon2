@@ -18,12 +18,15 @@ interface  UserApi
     @POST("UserApi.php")
     fun insertData(
         @Field("action") action: String?,
+        @Field("phone_no") phone_no: String?,
         @Field("name") name: String?,
-        @Field("description") description: String?,
-        @Field("galaxy") galaxy: String?,
-        @Field("star") star: String?,
-        @Field("dob") dob: String?,
-        @Field("died") died: String?
+        @Field("gender") gender: String?,
+        @Field("berth") berth: String?,
+        @Field("profile_pic") profile_pic: String?,
+        @Field("target_city") target_city: String?,
+        @Field("rec_question") rec_question: String?,
+        @Field("rec_answer") rec_answer: String?,
+        @Field("android_id") android_id: String?
     ): Call<UserResponseItem?>?
 
     /**
@@ -35,13 +38,15 @@ interface  UserApi
     @POST("UserApi.php")
     fun updateData(
         @Field("action") action: String?,
-        @Field("id") id: String?,
+        @Field("phone_no") phone_no: String?,
         @Field("name") name: String?,
-        @Field("description") description: String?,
-        @Field("galaxy") galaxy: String?,
-        @Field("star") star: String?,
-        @Field("dob") dob: String?,
-        @Field("died") died: String?
+        @Field("gender") gender: String?,
+        @Field("berth") berth: String?,
+        @Field("profile_pic") profile_pic: String?,
+        @Field("target_city") target_city: String?,
+        @Field("rec_question") rec_question: String?,
+        @Field("rec_answer") rec_answer: String?,
+        @Field("android_id") android_id: String?
     ): Call<UserResponseItem?>?
 
     /**
@@ -52,7 +57,7 @@ interface  UserApi
     @POST("UserApi.php")
     fun search(
         @Field("action") action: String?,
-        @Field("phone_num") query: String?
+        @Field("phone_no") phone_no: String?
     ): Call<UserResponseItem?>?
 
     /**
@@ -64,6 +69,6 @@ interface  UserApi
     @POST("UserApi.php")
     fun remove(
         @Field("action") action: String?,
-        @Field("id") id: String?
+        @Field("phone_no") phone_num: String?
     ): Call<UserResponseItem?>?
 }

@@ -30,5 +30,8 @@
         <item name="android:checkboxStyle">@style/customCheckboxFontStyle</item>
     </style>
 
+    <style name="editTextStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/editBoxFocusedUnderLine</item>
+    </style>
 
 </resources>
