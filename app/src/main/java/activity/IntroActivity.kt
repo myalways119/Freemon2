@@ -28,7 +28,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class IntroActivity : AppCompatActivity() {
-    val SPLASH_SCREEN = 2000
+    val SPLASH_SCREEN = 1800
     private lateinit var topAnimation : Animation
     private lateinit var bottomAnimation : Animation
 
@@ -48,8 +48,8 @@ class IntroActivity : AppCompatActivity() {
             if(intent != null)
             {
                 startActivity(intent)
+                finish()
             }
-            //finish()
         }, SPLASH_SCREEN.toLong())
     }
 
@@ -57,13 +57,10 @@ class IntroActivity : AppCompatActivity() {
     {
         CheckPermission() //Check Permission always should be first.
         SetAnimation() //Intro Activity Animation
-        //GlobalVariables.initialize(); //Initialize Global Variables (device phone num, device android id)
-        // Next Activity 결정
     }
 
     private fun GetNextActivity():Intent?
     {
-
         var intent:Intent? = null
 
         var savedAndroidId:String =  SharedPreferencesManager.GetStringValue(this, SharedPreferencesManager.KEY_ANDROID_ID,"")
@@ -114,7 +111,7 @@ class IntroActivity : AppCompatActivity() {
         {
             val intent = Intent(this, PermissionActivity::class.java)
             startActivity(intent)
-            //finish()
+            finish()
         }
     }
 

@@ -4,12 +4,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="activity.PermissionActivity">
+    tools:context="activity.PermissionActivity"
+    android:paddingBottom="40dp"
+    android:paddingTop="40dp"
+    android:paddingRight="20dp"
+    android:paddingLeft="20dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/permission_main_title"
+        android:text="@string/permission_main_title"
+
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="권한설정"
-        android:textSize="50sp"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textSize="23sp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        />
+    
+    <TextView
+        android:id="@+id/permission_sub_title"
+        android:text="@string/permission_sub_title"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/permission_main_title"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textSize="15sp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        />
+
+    <Button
+        android:id="@+id/permission_btnAskPermission"
+        android:layout_width="300dp"
+        android:layout_height="45dp"
+        android:background="@drawable/button_round_border"
+        android:text="@string/permission_allow"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,19 +14,24 @@
         android:theme="@style/Theme.Freemon2">
         <activity
             android:name="activity.JoinProfileActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name="activity.JoinPhoneNoActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name="activity.JoinAgreeActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name="activity.LoginActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name="activity.PermissionActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name="activity.IntroActivity"
             android:exported="true"
@@ -41,7 +46,7 @@
         <activity
             android:name="activity.MainActivity"
             android:exported="true"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>
