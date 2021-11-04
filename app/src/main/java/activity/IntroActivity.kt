@@ -15,7 +15,6 @@ import androidx.core.app.ActivityCompat
 import co.kr.freemon2.R
 import android.telephony.TelephonyManager
 import android.util.Log
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import api.UserApi
 import common.Common
@@ -28,7 +27,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class IntroActivity : AppCompatActivity() {
-    val SPLASH_SCREEN = 1800
+    val SPLASH_SCREEN = 3000
     private lateinit var topAnimation : Animation
     private lateinit var bottomAnimation : Animation
 
@@ -180,6 +179,60 @@ class IntroActivity : AppCompatActivity() {
 
         return returnItem
     }
+
+/* 비동기
+    private fun GetUserInfo(phoneNum: String):UserItem?
+    {
+
+        var returnItem:UserItem? = null
+
+        if (phoneNum.isNullOrEmpty() == true) return returnItem;
+
+        val api: UserApi = Common.client!!.create(UserApi::class.java)
+        val update: Call<UserResponseItem?>? = api.search("SELECT", phoneNum)
+
+        update!!.enqueue(object : Callback<UserResponseItem?> {
+            override fun onResponse(call: Call<UserResponseItem?>?, response: Response<UserResponseItem?>?)
+            {
+                if (response?.body() == null) {
+                    //showInfoDialog(a, "ERROR", "Response or ResponseBody is null")
+                    //Toast.makeText(this, "Response or ResponseBody is null", Toast.LENGTH_LONG).show()
+                    Log.d("GetUserInfo", "Response or ResponseBody is null")
+                    return
+                }
+
+                val myResponseCode: String = response.body()!!.code!!
+                if (myResponseCode.equals(CommonConst.DbResponseCode.SUCCESS, ignoreCase = true))
+                {
+                    val userItems = response.body()?.result!!
+
+                    for(userItem in userItems)
+                    {
+                        returnItem = userItem
+                    }
+
+                    //finish()
+                } else if (myResponseCode.equals(CommonConst.DbResponseCode.FAIL, ignoreCase = true)) {
+                    //Toast.makeText(null, "UNSUCCESSFUL", Toast.LENGTH_LONG).show()
+
+                } else if (myResponseCode.equals(CommonConst.DbResponseCode.ERROR, ignoreCase = true)) {
+                    //Toast.makeText(null, "NO MYSQL CONNECTION", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onFailure(
+                call: Call<UserResponseItem?>?,
+                t: Throwable
+            ) {
+                Log.d("RETROFIT", "ERROR THROWN DURING UPDATE: " + t.message)
+                //Toast.makeText(null, "FAILURE THROWN", Toast.LENGTH_LONG).show()
+            }
+        })
+
+
+        return returnItem
+    }
+*/
 
     private fun GetDevicePhoneNum():String
     {
