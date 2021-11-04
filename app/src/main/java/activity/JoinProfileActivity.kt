@@ -19,7 +19,7 @@ class JoinProfileActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join_profile)
 
-        imgProfileCamera.setOnClickListener(openGallery)
+        //imgProfileCamera.setOnClickListener(openGallery)
     }
 
 

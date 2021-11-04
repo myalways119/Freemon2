@@ -68,6 +68,8 @@ class IntroActivity : AppCompatActivity() {
         var deviceAndrodiId:String = GetDeviceAndroidId()
         var devicePhoneNo:String = GetDevicePhoneNum()
 
+        Common.userInfo = GetUserInfo(devicePhoneNo);
+
         if (deviceAndrodiId.isNullOrEmpty() == true || devicePhoneNo.isNullOrEmpty() == true)
         {
             //메세지 팝업 후 시스템 종료
@@ -88,7 +90,7 @@ class IntroActivity : AppCompatActivity() {
         else
         {   //로그인 화면으로 이동
             //해당 로그인 화면에서 "기존계정 찾기" 클릭해서 질문 답변 입력하도록 하면 자동으로 로그인되도록 설정.
-            Common.userInfo = GetUserInfo(devicePhoneNo);
+            //Common.userInfo = GetUserInfo(devicePhoneNo);
             intent = Intent(this, LoginActivity::class.java)
         }
 
@@ -171,7 +173,7 @@ class IntroActivity : AppCompatActivity() {
                 t: Throwable
             ) {
                 Log.d("RETROFIT", "ERROR THROWN DURING UPDATE: " + t.message)
-                Toast.makeText(null, "FAILURE THROWN", Toast.LENGTH_LONG).show()
+                //Toast.makeText(null, "FAILURE THROWN", Toast.LENGTH_LONG).show()
             }
         })
 

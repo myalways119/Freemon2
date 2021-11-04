@@ -9,6 +9,8 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import item.UserItem
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -27,6 +29,9 @@ object Common
     private var retrofit: Retrofit? = null
     public var userInfo:UserItem? = null
 
+    var gson = GsonBuilder()
+        .setLenient()
+        .create()
     /**
      * This method will return us our Retrofit instance which we can use to initiate HTTP calls.
      */
@@ -35,7 +40,7 @@ object Common
             if (retrofit == null) {
                 retrofit = Retrofit.Builder()
                     .baseUrl(base_url)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
             }
             return retrofit
